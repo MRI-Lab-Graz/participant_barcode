@@ -1,0 +1,209 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{ulem}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+
+\usepackage{tabularx}
+\usepackage{pifont}
+\newcommand{\checkbox}{\ding{113}} % empty checkbox
+
+
+
+
+\titleformat{\section}{\bfseries\Large}{\thesection}{1em}{}
+\titleformat{\subsection}{\bfseries\large}{\thesubsection}{1em}{}
+
+\setlist[itemize]{left=0pt,label=--}
+\setlength{\parindent}{0pt}
+%\setlength{\parskip}{1em}
+
+\begin{document}
+
+\pagestyle{plain} % default for rest of document
+
+\fancypagestyle{firstpage}{
+  \fancyhf{} % clear default header/footer
+  \fancyhead[L]{
+    \includegraphics[height=1.2cm]{psychologo.png}\hspace{1em}
+    \includegraphics[height=1.2cm]{mrilab.png}
+  }
+  \fancyhead[R]{
+    \includegraphics[height=1.2cm]{unigrazlogo.png}
+  }
+  \renewcommand{\headrulewidth}{0pt} % no header line
+}
+
+\thispagestyle{firstpage}
+
+
+\begin{center}
+\LARGE\textbf{INFORMATION ÜBER EINE UNTERSUCHUNG IM MAGNETFELD FÜR PROBANDINNEN UND PROBANDEN}
+\end{center}
+
+\vspace{3em}
+
+Die Magnetresonanztomographie (MRT) ist ein modernes, bildgebendes Verfahren, das die Anfertigung von Schnittbildern aller Körperregionen ermöglicht. Es kommen dabei \textbf{keine Röntgenstrahlen} oder \textbf{radioaktiven Substanzen} zum Einsatz. Die Bilder entstehen durch Signale von Wasserteilchen im Körper, die mittels eines starken Magnetfeldes und Hochfrequenzimpulsen erzeugt werden.
+
+\vspace{1em}
+
+\textbf{Nach aktuellem Wissensstand besteht bei den verwendeten Feldstärken kein Risiko einer biologischen Schädigung.}
+
+\vspace{1em}
+
+Für hochwertige Aufnahmen ist es wichtig, dass Sie während der Untersuchung \textbf{möglichst ruhig} im Gerät liegen. Bewegungen können zu Bildstörungen führen und eine Wiederholung der Aufnahmen notwendig machen.
+
+Während der Untersuchung entsteht ein \textbf{lautes, klopfendes Geräusch}; Sie erhalten daher einen \textbf{Gehörschutz}. Außerdem bekommen Sie einen \textbf{Signalball}. Wenn Sie diesen drücken, wird die Untersuchung unterbrochen, und wir treten mit Ihnen in Kontakt.
+
+Bitte bringen Sie \textbf{keine metallischen Gegenstände} (z.B. Schlüssel, Schmuck, Piercings, Haargummis, Brillen) oder \textbf{Kreditkarten} (werden gelöscht) in den Untersuchungsraum. 
+
+Die Untersuchungsliege kann sich während der Messung bewegen. 
+
+\textbf{Arme und Beine nicht überkreuzen!} Direkter Hautkontakt kann zu lokalen Erwär\-mungen führen. Bei Hitzegefühl bitte sofort den Signalball betätigen.
+
+\vspace{1em}
+
+\textbf{Das MRI Lab Graz führt ausschließlich Forschungsuntersuchungen durch.} Besteht ein Risiko (z.B. im Hinblick auf MR-Tauglichkeit oder Sicherheit), wird keine Untersuchung durchgeführt. Im Gegensatz zu klinischen Untersuchungen besteht \textbf{kein persönlicher Nutzen} für Sie.
+
+\newpage
+\section*{Persönliche Daten}
+
+\noindent
+\begin{tabular}{p{10cm} p{6cm}}  % Adjust widths as needed
+  \begin{minipage}[t]{\linewidth}
+    \vspace{0pt}  % aligns top
+    \begin{tabular}{|p{4cm}|p{6cm}|}
+      \hline
+      \textbf{Name:} & \\
+      \hline
+      \textbf{Geburtsdatum:} & \\
+      \hline
+      \textbf{Körpergröße (cm):} & \\
+      \hline
+      \textbf{Gewicht (kg):} & \\
+      \hline
+    \end{tabular}
+  \end{minipage}
+  &
+  \begin{minipage}[t]{\linewidth}
+    \vspace{0pt}  % aligns top
+    \hfill
+    \fbox{%
+      \begin{minipage}[c][2.5cm][c]{4cm}  % slightly taller to fit text below
+        \centering
+        \includegraphics[height=1.5cm]{../barcodes/barcode_<<ID>>.png}
+
+        \vspace{0.2cm}
+
+        \texttt{<<ID>>}
+      \end{minipage}
+    }
+  \end{minipage}
+\end{tabular}
+
+
+
+
+
+\vspace{1.5em}
+
+\section*{Fragebogen zur MR-Tauglichkeit}
+
+Bitte beantworten Sie die folgenden Fragen sorgfältig:
+
+\begin{longtable}{|p{13cm}|p{3cm}|}
+\hline
+Befinden sich metallische oder leitfähige Implantate oder Prothesen (z.B. Herzschrittmacher, Insulinpumpe, Mittelohrimplantate, Prothesen, Hörgeräte) in oder an Ihrem Körper? & Ja \checkbox\ Nein \checkbox \\
+\hline
+Haben Sie Metallteile (Piercing, Ohrringe, Zahnspangen etc.) oder Metallsplitter im Körper? & Ja \checkbox\ Nein \checkbox \\
+\hline
+Haben Sie Tätowierungen am Kopf-/Halsbereich, Nikotinpflaster oder kosmetische Augenmanipulationen? & Ja \checkbox\ Nein \checkbox \\
+\hline
+Wurde bei Ihnen eine Operation am Herz oder Kopf durchgeführt? & Ja \checkbox\ Nein \checkbox \\
+\hline
+Bestehen chronische Erkrankungen? \newline Wenn ja, welche: \rule{10cm}{0.4pt} & Ja \checkbox\ Nein \checkbox \\
+\hline
+Nehmen Sie derzeit Medikamente? \newline Wenn ja, welche: \rule{10cm}{0.4pt} & Ja \checkbox\ Nein \checkbox \\
+\hline
+\end{longtable}
+
+
+\vspace{1.5em}
+
+\section*{Zusätzliche Angaben für Frauen}
+
+\begin{longtable}{|p{13cm}|p{3cm}|}
+\hline
+Besteht eine Schwangerschaft bzw. die Möglichkeit einer Schwangerschaft? &  Ja \checkbox\ Nein \checkbox \\
+\hline
+Verhüten Sie mit einer Kupfer- oder Goldspirale? &  Ja \checkbox\ Nein \checkbox \\
+\hline
+\end{longtable}
+
+\vspace{1.5em}
+
+\section*{Einverständniserklärung}
+
+Ich bestätige, dass ich den Text gelesen, verstanden und die mich betreffenden Fragen nach bestem Wissen beantwortet habe. Ich stimme der Durchführung der MR-Forschungsuntersuchung zu. In einem persönlichen Gespräch wurden meine Fragen ausreichend beantwortet.
+
+\vspace{1.5em}
+\noindent
+
+\textbf{Datum und Unterschrift:} \raisebox{-0.7ex}{\rule{10cm}{0.4pt}}
+
+
+\vspace{2em}
+\newpage
+\section*{Datenschutzerklärung}
+
+Die Universität Graz behandelt Ihre personenbezogenen Daten vertraulich gemäß den gesetzlichen Bestimmungen. Diese Erklärung informiert Sie gem. Art. 12, 13 DS-GVO über Zweck, Rechtsgrundlage und Ihre Rechte.
+
+\textbf{Zweck und Rechtsgrundlage:} Die Daten \uline{Name, Geburtsdatum, Größe, Gewicht, Angaben zur MR-Tauglichkeit, MRT-Aufnahmen} werden auf Basis Ihrer Einwilligung verarbeitet. Die Speicherung erfolgt bis zum Widerruf, Dokumente zur Einwilligung max. drei Jahre ab Widerruf.
+
+MR-Daten (DICOM) werden pseudonymisiert gespeichert. Bilddaten werden mit einem Defacing-Tool anonymisiert.
+
+\textbf{Keine Weitergabe an externe Stellen.}
+
+\textbf{Ihre Rechte:}
+\begin{itemize}
+\item Auskunft (Art. 15 DS-GVO)
+\item Berichtigung, Löschung, Einschränkung (Art. 16–18 DS-GVO)
+\item Datenübertragbarkeit (Art. 20 DS-GVO)
+\item Widerspruch (Art. 21 DS-GVO)
+\item Widerruf der Einwilligung (Art. 7 Abs. 3 DS-GVO)
+\end{itemize}
+
+\textbf{Beschwerderecht:} Österreichische Datenschutzbehörde, Wickenburggasse 8, 1080 Wien, E-Mail: \href{mailto:dsb@dsb.gv.at}{dsb@dsb.gv.at}
+
+\textbf{Kontakt:}
+
+Universität Graz, Institut für Psychologie/fMRT Taskforce, 8010 Graz \\
+E-Mail: \href{mailto:psy.sek@uni-graz.at}{psy.sek@uni-graz.at} \\
+Datenschutzbeauftragte: \href{mailto:dsba@uni-graz.at}{dsba@uni-graz.at} \\
+Allgemeine Anfragen: \href{mailto:datenschutz@uni-graz.at}{datenschutz@uni-graz.at}
+
+\vspace{2em}
+
+\section*{Datenschutzrechtliche Einwilligung}
+
+Ich willige ausdrücklich ein, dass die Universität Graz meine personenbezogenen Daten (\uline{Name, Geburtsdatum, Größe, Gewicht, Angaben zur MR-Tauglichkeit, MRT-Aufnahmen}) im Rahmen der MRT-Forschungsuntersuchung verarbeitet. 
+
+Weiterverarbeitet werden das Alter in Jahren, die MRT-Aufnahmen (nach Defacing), sowie auswerterelevante MR-Parameter. Diese Einwilligung kann jederzeit per E-Mail an \href{mailto:psy.datenschutz@uni-graz.at}{psy.datenschutz@uni-graz.at} widerrufen werden.
+
+Die Rechtmäßigkeit der bis zum Widerruf erfolgten Verarbeitung bleibt unberührt.
+
+\vspace{1.5em}
+\noindent
+
+\textbf{Datum und Unterschrift:} \raisebox{-0.7ex}{\rule{10cm}{0.4pt}}
+
+
+
+\end{document}
