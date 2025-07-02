@@ -23,6 +23,70 @@ Ensure you have a working LaTeX installation with `pdflatex` available in your s
 - **macOS**: Use MacTeX
 - **Windows**: Use [MiKTeX](https://miktex.org/)
 
+#### If Linux installation fails
+##### 🔧 Manual Installation of TeX Live 2025
+
+1. **Remove existing TeX Live packages (optional but recommended)**
+
+```
+sudo apt remove texlive* --purge
+sudo apt autoremove
+```
+
+1. **Download the TeX Live installer**
+
+```
+cd /tmp
+wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
+tar -xzf install-tl-unx.tar.gz
+cd install-tl-*
+```
+
+1. **Run the installer**
+
+```
+sudo ./install-tl
+```
+
+This launches a **text-based GUI** installer. You can:
+
+- Press `I` to install using default settings.
+- It will install to `/usr/local/texlive/2025` by default.
+
+> 💡 This may take a while (~2–4GB download).
+
+1. **Add TeX Live binaries to your PATH**
+
+Add this to your `~/.bashrc`, `~/.zshrc`, or equivalent:
+
+```
+export PATH=/usr/local/texlive/2025/bin/x86_64-linux:$PATH
+```
+
+Then reload your shell:
+
+```
+source ~/.bashrc  # or ~/.zshrc
+```
+
+1. **Verify installation**
+
+```
+pdflatex --version
+```
+
+You should see **TeX Live 2025** in the output.
+
+------
+
+### 🛠 Tip: Use `tlmgr` to manage packages
+
+Once installed, you can update and manage LaTeX packages with:
+
+```
+sudo tlmgr update --self --all
+```
+
 ------
 
 ## 📝 Example `barcode_list.txt`
