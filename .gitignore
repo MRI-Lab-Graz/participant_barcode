@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env
+
+# macOS
+.DS_Store
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Project Specific Outputs
+barcodes/
+generated_pdfs/
+
+# LaTeX (for temporary files generated during compilation)
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# User-specific data (optional - uncomment if you want to keep the list local)
+# barcode_list.txt

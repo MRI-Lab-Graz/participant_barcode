@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block title %}Barcode PDF Generator{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="text-center mb-5">
+            <h2 class="mb-3">Barcode PDF Generator</h2>
+            <p class="lead text-muted">Generate participant information sheets with barcodes.</p>
+        </div>
+
+        <form id="generateForm" action="/generate" method="POST" enctype="multipart/form-data">
+            <div class="row g-4">
+                <!-- Template Selection -->
+                <div class="col-md-12">
+                    <div class="card feature-card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-file-alt text-primary me-2"></i>
+                                Choose Template
+                            </h5>
+                            <select class="form-select" name="template" required>
+                                {% for template in templates %}
+                                <option value="{{ template }}">{{ template }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Selection -->
+                <div class="col-md-12">
+                    <div class="card feature-card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-barcode text-primary me-2"></i>
+                                Barcode List
+                            </h5>
+                            <div class="mb-3">
+                                <label class="form-label">Upload File (one ID per line, .txt only)</label>
+                                <input type="file" class="form-control" name="barcode_file" id="barcodeFile" accept=".txt">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Or Paste IDs here</label>
+                                <div class="input-group">
+                                    <textarea class="form-control" name="barcodes" id="barcodeTextArea" rows="5" placeholder="ID001&#10;ID002&#10;..."></textarea>
+                                </div>
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-outline-info btn-sm" id="validateBtn">
+                                        <i class="fas fa-check-circle me-1"></i>Validate Codes
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="validationFeedback" class="mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output Selection -->
+                <div class="col-md-12">
+                    <div class="card feature-card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-folder-open text-primary me-2"></i>
+                                Output Destination
+                            </h5>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" name="just_download" value="true" id="justDownload">
+                                <label class="form-check-label" for="justDownload">
+                                    Just download as ZIP
+                                </label>
+                            </div>
+                            <div id="folderSelectionSection">
+                                <div class="mb-3">
+                                    <label class="form-label">Choose Folder</label>
+                                    <div class="input-group">
+                                        <select class="form-select" name="output_folder" id="outputFolderSelect">
+                                            {% for folder in output_folders %}
+                                            <option value="{{ folder }}">{{ folder }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button class="btn btn-outline-secondary" type="button" id="newFolderBtn">New Folder</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="col-md-12 text-center">
+                    <button type="submit" class="btn btn-primary btn-lg px-5" id="generateBtn">
+                        <i class="fas fa-cog fa-spin me-2 d-none" id="generateSpinner"></i>
+                        Generate PDFs
+                    </button>
+                </div>
+
+                <!-- Status Panel -->
+                <div class="col-md-12 d-none" id="statusPanel">
+                    <div class="card feature-card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Status</h5>
+                            <div id="statusList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- New Folder Modal -->
+<div class="modal fade" id="newFolderModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Folder</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control" id="newFolderName" placeholder="Folder Name">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveFolderBtn">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const form = document.getElementById('generateForm');
+    const justDownload = document.getElementById('justDownload');
+    const folderSection = document.getElementById('folderSelectionSection');
+    const generateBtn = document.getElementById('generateBtn');
+    const spinner = document.getElementById('generateSpinner');
+    const statusPanel = document.getElementById('statusPanel');
+    const statusList = document.getElementById('statusList');
+    const barcodeTextArea = document.getElementById('barcodeTextArea');
+    const barcodeFile = document.getElementById('barcodeFile');
+    const validateBtn = document.getElementById('validateBtn');
+    const validationFeedback = document.getElementById('validationFeedback');
+    
+    // Validation function
+    function validateIDs(codeString) {
+        if (!codeString.trim()) return { valid: true, errors: [] };
+        
+        const codes = codeString.split('\n').map(c => c.trim()).filter(c => c.length > 0);
+        const errors = [];
+        const seen = new Set();
+        const validRegex = /^[a-zA-Z0-9_-]+$/; // Letters, numbers, underscore, dash
+        
+        codes.forEach((code, index) => {
+            if (!validRegex.test(code)) {
+                errors.push(`Line ${index + 1}: "${code}" contains invalid characters (no spaces, special chars, or Umlaute allowed).`);
+            }
+            if (seen.has(code)) {
+                errors.push(`Line ${index + 1}: Duplicate ID "${code}" found.`);
+            }
+            seen.add(code);
+        });
+        
+        return {
+            valid: errors.length === 0,
+            errors: errors,
+            count: codes.length
+        };
+    }
+
+    function displayValidation(result) {
+        validationFeedback.innerHTML = '';
+        if (result.errors.length > 0) {
+            validationFeedback.innerHTML = `
+                <div class="alert alert-danger py-2 px-3 small">
+                    <ul class="mb-0">
+                        ${result.errors.map(err => `<li>${err}</li>`).join('')}
+                    </ul>
+                </div>`;
+            return false;
+        } else if (result.count > 0) {
+            validationFeedback.innerHTML = `
+                <div class="alert alert-success py-2 px-3 small mb-0">
+                    <i class="fas fa-check-circle me-1"></i> ${result.count} codes validated successfully.
+                </div>`;
+            return true;
+        }
+        return true;
+    }
+
+    validateBtn.addEventListener('click', () => {
+        const result = validateIDs(barcodeTextArea.value);
+        displayValidation(result);
+    });
+
+    barcodeFile.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const content = event.target.result;
+            const result = validateIDs(content);
+            if (!displayValidation(result)) {
+                // Clear the file if invalid
+                barcodeFile.value = '';
+            } else {
+                // Optionally fill the textarea with the content
+                barcodeTextArea.value = content;
+            }
+        };
+        reader.readAsText(file);
+    });
+
+    // Toggle folder selection based on download checkbox
+    justDownload.addEventListener('change', () => {
+        folderSection.style.display = justDownload.checked ? 'none' : 'block';
+    });
+
+    // Handle New Folder
+    const newFolderBtn = document.getElementById('newFolderBtn');
+    const newFolderModal = new bootstrap.Modal(document.getElementById('newFolderModal'));
+    const saveFolderBtn = document.getElementById('saveFolderBtn');
+    const newFolderNameInput = document.getElementById('newFolderName');
+    const outputFolderSelect = document.getElementById('outputFolderSelect');
+
+    newFolderBtn.addEventListener('click', () => {
+        newFolderModal.show();
+    });
+
+    saveFolderBtn.addEventListener('click', async () => {
+        const name = newFolderNameInput.value.trim();
+        if (!name) return;
+
+        const response = await fetch('/create_folder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+            const option = document.createElement('option');
+            option.value = name;
+            option.text = name;
+            option.selected = true;
+            outputFolderSelect.add(option);
+            newFolderModal.hide();
+            newFolderNameInput.value = '';
+        } else {
+            alert('Error creating folder: ' + data.message);
+        }
+    });
+
+    // Handle Form Submission
+    form.addEventListener('submit', async (e) => {
+        // Run validation before submit
+        const result = validateIDs(barcodeTextArea.value);
+        if (!displayValidation(result)) {
+            e.preventDefault();
+            alert('Please fix validation errors before generating PDFs.');
+            return;
+        }
+
+        if (justDownload.checked) {
+            // Let the browser handle standard file download
+            return;
+        }
+
+        e.preventDefault();
+        
+        generateBtn.disabled = true;
+        spinner.classList.remove('d-none');
+        statusPanel.classList.remove('d-none');
+        statusList.innerHTML = '<div class="text-info">Processing...</div>';
+
+        const formData = new FormData(form);
+        const response = await fetch('/generate', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+
+        generateBtn.disabled = false;
+        spinner.classList.add('d-none');
+
+        if (data.success) {
+            statusList.innerHTML = '';
+            data.results.forEach(res => {
+                const item = document.createElement('div');
+                item.className = res.status === 'success' ? 'success-item' : 'error-item';
+                item.innerHTML = `<strong>${res.id}:</strong> ${res.status === 'success' ? 'Generated' : res.message}`;
+                statusList.appendChild(item);
+            });
+        } else {
+            statusList.innerHTML = `<div class="error-item"><strong>Error:</strong> ${data.message}</div>`;
+        }
+    });
+</script>
+{% endblock %}

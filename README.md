@@ -1,127 +1,113 @@
-## ⚙️ Installation & Setup
+# Participant Barcode Tool
 
-We recommend using a virtual environment to keep dependencies isolated:
+A simple and efficient tool to generate participant information sheets (PDF) containing unique barcodes for study participants.
 
-```
-python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
-```
+## 🚀 Quick Start: Web Interface (Recommended)
 
-### 📦 Required Python Packages
+The easiest way to use this tool is through the graphical web interface.
 
-Install the required Python dependencies:
+### 1. Download Standalone Version
+You can download the latest standalone executable for your operating system from the **[Releases](https://github.com/MRI-Lab-Graz/participant_barcode/releases)** page.
+*   **Windows**: Download `ParticipantBarcodeTool-Windows.exe`
+*   **macOS**: Download `ParticipantBarcodeTool-macOS-AppleSilicon`
+*   **Linux**: Download `ParticipantBarcodeTool-Linux`
 
-```
-pip install python-barcode Pillow
-```
+### 2. Run from Source
+If you prefer running the script directly:
+1.  **Install dependencies**:
+    *   **Windows**: Double-click `install/install.bat`
+    *   **macOS/Linux**: Run `bash install/install.sh`
+2.  **Start the app**:
+    ```bash
+    python app.py
+    ```
+3.  Open your browser at `http://localhost:5000`.
 
-### 🧰 System Requirements
+---
 
-Ensure you have a working LaTeX installation with `pdflatex` available in your system's PATH.
+## 📖 Using the Web Interface
 
-- **Linux**: `sudo apt install texlive-latex-base`
-- **macOS**: Use MacTeX
-- **Windows**: Use [MiKTeX](https://miktex.org/)
+1.  **Select LaTeX Template**: Choose a template from the dropdown (sourced from `subject_info/`).
+2.  **Enter Participant IDs**:
+    *   Type or paste IDs directly into the text area (one per line).
+    *   **OR** upload a `.txt` file containing the IDs.
+3.  **Generate**: Click "Generate PDFs". The tool will:
+    *   Create unique Code128 barcodes.
+    *   Embed them into the LaTeX template.
+    *   Compile them into individual PDFs.
+4.  **Download**: Once finished, you can browse and download the generated PDFs directly from the interface.
 
-#### If Linux installation fails
-##### 🔧 Manual Installation of TeX Live 2025
+---
 
-1. **Remove existing TeX Live packages (optional but recommended)**
+## 🧰 System Requirements
 
-```
-sudo apt remove texlive* --purge
-sudo apt autoremove
-```
+This tool requires **LaTeX** (specifically `pdflatex`) to be installed on your system to generate PDFs.
 
-1. **Download the TeX Live installer**
+*   **Windows**: Install [MiKTeX](https://miktex.org/).
+*   **macOS**: Install [MacTeX](https://tug.org/mactex/).
+*   **Linux**: `sudo apt install texlive-latex-base texlive-fonts-recommended`
 
-```
-cd /tmp
-wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
-tar -xzf install-tl-unx.tar.gz
-cd install-tl-*
-```
+<details>
+<summary><b>Manual LaTeX Installation for Linux (if apt fails)</b></summary>
 
-1. **Run the installer**
+1. **Remove existing TeX Live packages**:
+   ```bash
+   sudo apt remove texlive* --purge
+   sudo apt autoremove
+   ```
+2. **Download & Run Installer**:
+   ```bash
+   cd /tmp
+   wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
+   tar -xzf install-tl-unx.tar.gz
+   cd install-tl-*
+   sudo ./install-tl
+   ```
+3. **Add to PATH** (e.g., in `~/.bashrc`):
+   ```bash
+   export PATH=/usr/local/texlive/2025/bin/x86_64-linux:$PATH
+   ```
+</details>
 
-```
-sudo ./install-tl
-```
+---
 
-This launches a **text-based GUI** installer. You can:
+## 🖥️ Terminal Usage (Advanced)
 
-- Press `I` to install using default settings.
-- It will install to `/usr/local/texlive/2025` by default.
+For users who prefer the command line or want to automate the process:
 
-> 💡 This may take a while (~2–4GB download).
+1.  Add your list of subject IDs to `barcode_list.txt` (one per line).
+2.  Run the generation script:
+    ```bash
+    python gen_subject_pdf.py
+    ```
+3.  The results will be stored in the `generated_pdfs/` directory.
 
-1. **Add TeX Live binaries to your PATH**
-
-Add this to your `~/.bashrc`, `~/.zshrc`, or equivalent:
-
-```
-export PATH=/usr/local/texlive/2025/bin/x86_64-linux:$PATH
-```
-
-Then reload your shell:
-
-```
-source ~/.bashrc  # or ~/.zshrc
-```
-
-1. **Verify installation**
-
-```
-pdflatex --version
-```
-
-You should see **TeX Live 2025** in the output.
-
-------
-
-### 🛠 Tip: Use `tlmgr` to manage packages
-
-Once installed, you can update and manage LaTeX packages with:
-
-```
-sudo tlmgr update --self --all
-```
-
-------
-
-## 📝 Example `barcode_list.txt`
-
-This file should contain one unique ID per line:
-
-```
-P001
-P002
-P003
-P004
-```
-
-Save this as `barcode_list.txt` in the root directory of the project.
-
-## 🚀 How to Run
-
-1. Add your list of subject IDs in `barcode_list.txt`, one per line.
-2. Run the script:
-
-```
-python gen_subject_pdf.py
-```
-
-1. Check the `generated_pdfs/` directory for your individual PDFs.
+---
 
 ## 🗂️ Project Structure
 
 ```
-├── barcode_list.txt           # List of IDs, one per line
-├── barcodes/                  # Folder where barcode images will be saved
-├── generated_pdfs/           # Output folder for generated PDFs
-├── subject_info/
-│   └── main.tex              # LaTeX template with placeholder <<ID>>
-├── gen_subject_pdf.py                 # Main script 
+├── app.py                    # Main Flask application
+├── gen_subject_pdf.py         # Script for CLI usage
+├── pdf_generator.py           # Core logic for PDF generation
+├── install/                  # Setup scripts and requirements
+├── static/                   # Web interface CSS/Images
+├── templates/                # Web interface HTML
+├── subject_info/             # LaTeX templates (.tex)
+├── barcodes/                 # Generated barcode images (temp)
+└── generated_pdfs/           # Output folder for PDFs
 ```
 
-------
+---
+
+## 📦 Build Executable Locally
+
+If you want to build your own standalone version:
+
+```bash
+# Windows
+pyinstaller --noconfirm --onefile --windowed --add-data "templates;templates" --add-data "static;static" --add-data "subject_info;subject_info" --name "ParticipantBarcodeTool" app.py
+
+# macOS/Linux
+pyinstaller --noconfirm --onefile --windowed --add-data "templates:templates" --add-data "static:static" --add-data "subject_info:subject_info" --name "ParticipantBarcodeTool" app.py
+```
