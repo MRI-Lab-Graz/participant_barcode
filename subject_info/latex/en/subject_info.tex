@@ -1,0 +1,209 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{ulem}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+
+\usepackage{tabularx}
+\usepackage{pifont}
+\newcommand{\checkbox}{\ding{113}} % empty checkbox
+
+
+
+
+\titleformat{\section}{\bfseries\Large}{\thesection}{1em}{}
+\titleformat{\subsection}{\bfseries\large}{\thesubsection}{1em}{}
+
+\setlist[itemize]{left=0pt,label=--}
+\setlength{\parindent}{0pt}
+%\setlength{\parskip}{1em}
+
+\begin{document}
+
+\pagestyle{plain} % default for rest of document
+
+\fancypagestyle{firstpage}{
+  \fancyhf{} % clear default header/footer
+  \fancyhead[L]{
+    \includegraphics[height=1.2cm]{../../psychologo.png}\hspace{1em}
+    \includegraphics[height=1.2cm]{../../mrilab.png}
+  }
+  \fancyhead[R]{
+    \includegraphics[height=1.2cm]{../../unigrazlogo.png}
+  }
+  \renewcommand{\headrulewidth}{0pt} % no header line
+}
+
+\thispagestyle{firstpage}
+
+
+\begin{center}
+\LARGE\textbf{INFORMATION ABOUT AN MRI EXAMINATION FOR PARTICIPANTS}
+\end{center}
+
+\vspace{3em}
+
+Magnetic Resonance Imaging (MRI) is a modern imaging technique that produces detailed cross-sectional images of all body regions. \textbf{No X-rays} or \textbf{radioactive substances} are used. The images are generated from signals of water molecules in the body, produced using a strong magnetic field and radiofrequency pulses.
+
+\vspace{1em}
+
+\textbf{According to current knowledge, there is no risk of biological damage at the field strengths used.}
+
+\vspace{1em}
+
+For high-quality images, it is important that you \textbf{remain as still as possible} during the examination. Movement can cause image artifacts and may require repeated scans.
+
+During the examination, a \textbf{loud, knocking noise} is produced; you will therefore receive \textbf{hearing protection}. You will also be given a \textbf{panic button}. If you press it, the examination will be interrupted and we will contact you.
+
+Please do \textbf{not bring any metallic objects} (e.g., keys, jewelry, piercings, hair ties, glasses) or \textbf{credit cards} (which will be erased) into the examination room.
+
+The examination couch may move during the measurement.
+
+\textbf{Do not cross your arms and legs!} Direct skin contact can cause local heating. If you feel heat, please immediately press the panic button.
+
+\vspace{1em}
+
+\textbf{The MRI Lab Graz conducts research studies exclusively.} If there is a risk (e.g., regarding MRI safety or compatibility), no examination will be performed. Unlike clinical examinations, there is \textbf{no personal benefit} for you.
+
+\newpage
+\section*{Personal Data}
+
+\noindent
+\begin{tabular}{p{10cm} p{6cm}}  % Adjust widths as needed
+  \begin{minipage}[t]{\linewidth}
+    \vspace{0pt}  % aligns top
+    \begin{tabular}{|p{4cm}|p{6cm}|}
+      \hline
+      \textbf{Name:} & \\
+      \hline
+      \textbf{Date of Birth:} & \\
+      \hline
+      \textbf{Height (cm):} & \\
+      \hline
+      \textbf{Weight (kg):} & \\
+      \hline
+    \end{tabular}
+  \end{minipage}
+  &
+  \begin{minipage}[t]{\linewidth}
+    \vspace{0pt}  % aligns top
+    \hfill
+    \fbox{%
+      \begin{minipage}[c][2.5cm][c]{4cm}  % slightly taller to fit text below
+        \centering
+        \includegraphics[height=1.5cm]{../../barcodes/barcode_<<ID>>.png}
+
+        \vspace{0.2cm}
+
+        \texttt{<<ID>>}
+      \end{minipage}
+    }
+  \end{minipage}
+\end{tabular}
+
+
+
+
+
+\vspace{1.5em}
+
+\section*{MRI Safety Questionnaire}
+
+Please answer the following questions carefully:
+
+\begin{longtable}{|p{12.5cm}|p{3cm}|}
+\hline
+Do you have any metallic or conductive implants or prostheses in or on your body (e.g., pacemaker, insulin pump, middle ear implants, prostheses, hearing aids)? & Yes \checkbox\ No \checkbox \\
+\hline
+Do you have any metal parts (piercing, earrings, braces, etc.) or metal splinters in your body? & Yes \checkbox\ No \checkbox \\
+\hline
+Do you have tattoos in the head/neck area, nicotine patches, or cosmetic eye procedures? & Yes \checkbox\ No \checkbox \\
+\hline
+Have you had surgery on your heart or head? & Yes \checkbox\ No \checkbox \\
+\hline
+Do you have any chronic illnesses? \newline If yes, which: \rule{9cm}{0.4pt} & Yes \checkbox\ No \checkbox \\
+\hline
+Are you currently taking any medications? \newline If yes, which: \rule{9cm}{0.4pt} & Yes \checkbox\ No \checkbox \\
+\hline
+\end{longtable}
+
+
+%\vspace{1.5em}
+
+\section*{Additional Information for Women}
+
+\begin{longtable}{|p{12.5cm}|p{3cm}|}
+\hline
+Is there a possibility of pregnancy or are you pregnant? &  Yes \checkbox\ No \checkbox \\
+\hline
+Are you using a copper or gold intrauterine device (IUD) for contraception? &  Yes \checkbox\ No \checkbox \\
+\hline
+\end{longtable}
+
+\vspace{1.5em}
+
+\section*{Informed Consent}
+
+I confirm that I have read and understood the information above and have answered the questions concerning me to the best of my knowledge. I consent to the MRI research examination. My questions have been adequately answered during a personal conversation.
+
+\vspace{1.5em}
+\noindent
+
+\textbf{Date and Signature:} \raisebox{-0.7ex}{\rule{10cm}{0.4pt}}
+
+
+\vspace{2em}
+\newpage
+\section*{Data Protection Statement}
+
+The University of Graz treats your personal data confidentially in accordance with applicable legal provisions. This statement informs you pursuant to Articles 12 and 13 of the GDPR about the purpose, legal basis, and your rights.
+
+\textbf{Purpose and Legal Basis:} Your data \uline{name, date of birth, height, weight, information on MRI safety, MRI scans} are processed on the basis of your consent. Storage continues until revocation; documents of consent are retained for a maximum of three years after revocation.
+
+MR data (DICOM) are stored pseudonymized. Image data are anonymized using a defacing tool.
+
+\textbf{No sharing with external parties.}
+
+\textbf{Your Rights:}
+\begin{itemize}
+\item Right of access (Art. 15 GDPR)
+\item Right to rectification, erasure, and restriction (Art. 16–18 GDPR)
+\item Right to data portability (Art. 20 GDPR)
+\item Right to object (Art. 21 GDPR)
+\item Right to withdraw consent (Art. 7 para. 3 GDPR)
+\end{itemize}
+
+\textbf{Right to lodge a complaint:} Austrian Data Protection Authority, Wickenburggasse 8, 1080 Vienna, E-Mail: \href{mailto:dsb@dsb.gv.at}{dsb@dsb.gv.at}
+
+\textbf{Contact:}
+
+University of Graz, Department of Psychology/fMRI Taskforce, 8010 Graz \\
+E-Mail: \href{mailto:psy.sek@uni-graz.at}{psy.sek@uni-graz.at} \\
+Data Protection Officer: \href{mailto:dsba@uni-graz.at}{dsba@uni-graz.at} \\
+General Inquiries: \href{mailto:datenschutz@uni-graz.at}{datenschutz@uni-graz.at}
+
+\vspace{2em}
+
+\section*{Data Protection Consent}
+
+I expressly consent that the University of Graz processes my personal data \uline{(name, date of birth, height, weight, information on MRI safety, MRI scans)} in the context of the MRI research examination.
+
+Further processing will include age in years, MRI scans (after defacing), and MR parameters relevant for analysis. This consent can be withdrawn at any time via e-mail to \href{mailto:psy.datenschutz@uni-graz.at}{psy.datenschutz@uni-graz.at}.
+
+The lawfulness of data processing prior to revocation remains unaffected.
+
+\vspace{1.5em}
+\noindent
+
+\textbf{Date and Signature:} \raisebox{-0.7ex}{\rule{10cm}{0.4pt}}
+
+
+
+\end{document}

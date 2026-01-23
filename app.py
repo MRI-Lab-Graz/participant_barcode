@@ -37,10 +37,18 @@ if hasattr(sys, '_MEIPASS'):
 # Basic Routes
 @app.route('/')
 def index():
-    # List templates in subject_info
-    template_dir = get_resource_path('subject_info')
+    # List templates in subject_info/latex subdirectories
+    base_dir = get_resource_path('subject_info')
+    latex_dir = os.path.join(base_dir, 'latex')
     
-    templates = [f for f in os.listdir(template_dir) if f.endswith('.tex')]
+    languages = {}
+    if os.path.exists(latex_dir):
+        for lang_folder in os.listdir(latex_dir):
+            lang_path = os.path.join(latex_dir, lang_folder)
+            if os.path.isdir(lang_path):
+                templates = [f for f in os.listdir(lang_path) if f.endswith('.tex')]
+                if templates:
+                    languages[lang_folder] = templates
     
     # List existing output folders
     # For output, we always want the current working directory, not the bundle dir
@@ -50,11 +58,12 @@ def index():
     
     output_folders = [f for f in os.listdir(output_base) if os.path.isdir(os.path.join(output_base, f))]
     
-    return render_template('index.html', templates=templates, output_folders=output_folders)
+    return render_template('index.html', languages=languages, output_folders=output_folders)
 
 @app.route('/generate', methods=['POST'])
 def generate():
     data = request.form
+    language = data.get('language', 'en')
     template_name = data.get('template')
     barcode_input = data.get('barcodes', '')
     barcode_file = request.files.get('barcode_file')
@@ -87,8 +96,9 @@ def generate():
     if duplicates:
         return jsonify(success=False, message=f"Duplicate IDs found: {', '.join(duplicates)}")
 
-    # Paths
-    template_path = os.path.join(get_resource_path('subject_info'), template_name)
+    # Paths - use latex subdirectory structure
+    base_dir = get_resource_path('subject_info')
+    template_path = os.path.join(base_dir, 'latex', language, template_name)
     
     # We use current working directory for user files (barcodes, outputs)
     working_dir = os.getcwd()

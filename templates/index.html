@@ -12,6 +12,23 @@
 
         <form id="generateForm" action="/generate" method="POST" enctype="multipart/form-data">
             <div class="row g-4">
+                <!-- Language Selection -->
+                <div class="col-md-12">
+                    <div class="card feature-card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-globe text-primary me-2"></i>
+                                Select Language
+                            </h5>
+                            <select class="form-select" id="languageSelect" name="language" required>
+                                {% for lang in languages.keys() %}
+                                <option value="{{ lang }}">{{ lang.upper() }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Template Selection -->
                 <div class="col-md-12">
                     <div class="card feature-card">
@@ -20,10 +37,8 @@
                                 <i class="fas fa-file-alt text-primary me-2"></i>
                                 Choose Template
                             </h5>
-                            <select class="form-select" name="template" required>
-                                {% for template in templates %}
-                                <option value="{{ template }}">{{ template }}</option>
-                                {% endfor %}
+                            <select class="form-select" id="templateSelect" name="template" required>
+                                <!-- Populated by JavaScript -->
                             </select>
                         </div>
                     </div>
@@ -132,6 +147,36 @@
 
 {% block scripts %}
 <script>
+    // Language and template data from Jinja2
+    const languagesData = {
+        {% for lang, templates in languages.items() %}
+        '{{ lang }}': [{% for template in templates %}'{{ template }}'{{ "," if not loop.last }}{% endfor %}],
+        {% endfor %}
+    };
+
+    const languageSelect = document.getElementById('languageSelect');
+    const templateSelect = document.getElementById('templateSelect');
+    
+    // Function to update template options based on selected language
+    function updateTemplates() {
+        const selectedLang = languageSelect.value;
+        const templates = languagesData[selectedLang] || [];
+        
+        templateSelect.innerHTML = '';
+        templates.forEach(template => {
+            const option = document.createElement('option');
+            option.value = template;
+            option.textContent = template;
+            templateSelect.appendChild(option);
+        });
+    }
+    
+    // Update templates on language change
+    languageSelect.addEventListener('change', updateTemplates);
+    
+    // Initialize templates on page load
+    updateTemplates();
+
     const form = document.getElementById('generateForm');
     const justDownload = document.getElementById('justDownload');
     const folderSection = document.getElementById('folderSelectionSection');

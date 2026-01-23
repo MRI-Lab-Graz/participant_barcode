@@ -35,10 +35,20 @@ def generate_pdfs(codes, template_path, output_dir, barcode_dir='barcodes'):
 
             # Replace ID and update barcode path in template
             tex_content = template.replace('<<ID>>', uid)
-            # Replace the ../barcodes/ (or whatever is there) with our calculated path
-            # We look for the pattern used in the template: \includegraphics[height=1.5cm]{../barcodes/barcode_<<ID>>.png}
-            # Actually, to be safe, let's just replace ../barcodes/
-            tex_content = tex_content.replace('../barcodes/', rel_barcode_dir)
+            
+            # Replace relative barcode path with absolute path
+            abs_barcode_dir = os.path.abspath(barcode_dir).replace(os.sep, '/')
+            tex_content = tex_content.replace('../barcodes/', abs_barcode_dir + '/')
+            
+            # Replace relative image paths with absolute paths
+            subject_info_dir = os.path.dirname(os.path.abspath(template_path))
+            subject_info_dir = os.path.dirname(subject_info_dir)  # Go up two levels to subject_info/
+            subject_info_dir = subject_info_dir.replace(os.sep, '/')
+            
+            # Replace the relative paths with absolute paths
+            tex_content = tex_content.replace('../../psychologo.png', subject_info_dir + '/psychologo.png')
+            tex_content = tex_content.replace('../../mrilab.png', subject_info_dir + '/mrilab.png')
+            tex_content = tex_content.replace('../../unigrazlogo.png', subject_info_dir + '/unigrazlogo.png')
 
             # Save .tex file
             tex_filename = os.path.join(output_dir, f'sub-{uid}.tex')
@@ -46,12 +56,9 @@ def generate_pdfs(codes, template_path, output_dir, barcode_dir='barcodes'):
                 tex_file.write(tex_content)
 
             # Compile LaTeX to PDF
-            # Add template directory to TEXINPUTS so it can find images (logo, etc.)
             env = os.environ.copy()
-            template_dir = os.path.dirname(os.path.abspath(template_path))
-            # In TEXINPUTS, . means current dir, and : is the separator on Unix ( ; on Windows)
             sep = ';' if os.name == 'nt' else ':'
-            env['TEXINPUTS'] = f".{sep}{template_dir}{sep}{env.get('TEXINPUTS', '')}"
+            env['TEXINPUTS'] = f".{sep}{env.get('TEXINPUTS', '')}"
 
             subprocess.run([
                 'pdflatex',
