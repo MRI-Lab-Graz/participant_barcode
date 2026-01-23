@@ -111,3 +111,14 @@ pyinstaller --noconfirm --onefile --windowed --add-data "templates;templates" --
 # macOS/Linux
 pyinstaller --noconfirm --onefile --windowed --add-data "templates:templates" --add-data "static:static" --add-data "subject_info:subject_info" --name "ParticipantBarcodeTool" app.py
 ```
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### Third-Party Dependencies
+- **Python packages**: Flask (BSD-3-Clause), Waitress (ZPL), python-barcode (MIT), Pillow (HPND)
+- **LaTeX**: Requires user-installed LaTeX distribution (MiKTeX/MacTeX/TeX Live) - separate license applies
+- All third-party software maintains their respective licenses
