@@ -57,6 +57,15 @@ jobs:
       run: |
         move dist\ParticipantBarcodeTool.exe dist\${{ matrix.artifact_name }}
 
+    # Optional: Sign Windows executable (requires secrets.SIGNING_CERT setup)
+    # Uncomment when you have a code signing certificate
+    # - name: Sign Windows executable
+    #   if: matrix.os == 'windows-latest' && secrets.SIGNING_CERT != ''
+    #   run: |
+    #     echo "${{ secrets.SIGNING_CERT }}" | base64 -d > cert.pfx
+    #     signtool sign /f cert.pfx /p "${{ secrets.CERT_PASSWORD }}" /t http://timestamp.digicert.com dist\${{ matrix.artifact_name }}
+    #     del cert.pfx
+
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:

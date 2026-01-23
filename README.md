@@ -12,6 +12,15 @@ You can download the latest standalone executable for your operating system from
 *   **macOS**: Download `ParticipantBarcodeTool-macOS-AppleSilicon`
 *   **Linux**: Download `ParticipantBarcodeTool-Linux`
 
+#### 🛡️ Windows Security Warning (Important!)
+When running the Windows executable, you may see a "Windows protected your PC" SmartScreen warning. This is normal for unsigned executables. The software is safe and open source.
+
+**To run the application:**
+1. Click "More info"
+2. Click "Run anyway"
+
+**Why this happens:** Code signing certificates cost $100-400/year. As an open-source academic project, we haven't purchased one yet. You can verify the source code is safe by reviewing it on GitHub or running from source instead.
+
 ### 2. Run from Source
 If you prefer running the script directly:
 1.  **Install dependencies**:
@@ -43,7 +52,21 @@ If you prefer running the script directly:
 
 This tool requires **LaTeX** (specifically `pdflatex`) to be installed on your system to generate PDFs.
 
-*   **Windows**: Install [MiKTeX](https://miktex.org/).
+### Easy Installation (Recommended)
+
+**Windows**: Run `install/install.bat` - it will:
+- Install Python dependencies via UV
+- Detect if LaTeX is missing
+- Offer to automatically install TinyTeX (lightweight, ~100MB)
+- TinyTeX is free, open source, and fully compatible
+
+**macOS/Linux**: Run `bash install/install.sh` for automatic setup with UV
+
+### Manual LaTeX Installation
+
+If you prefer manual installation or the automatic installer fails:
+
+*   **Windows**: Install [MiKTeX](https://miktex.org/) (free, open source) **OR** [TinyTeX](https://yihui.org/tinytex/)
 *   **macOS**: Install [MacTeX](https://tug.org/mactex/).
 *   **Linux**: `sudo apt install texlive-latex-base texlive-fonts-recommended`
 
