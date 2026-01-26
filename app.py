@@ -67,8 +67,13 @@ def generate():
     template_name = data.get('template')
     barcode_input = data.get('barcodes', '')
     barcode_file = request.files.get('barcode_file')
-    output_folder_name = data.get('output_folder', 'default')
+    output_folder_name = data.get('output_folder', '')
     just_download = data.get('just_download') == 'true'
+    
+    # If no folder specified and not just downloading, create timestamped folder
+    if not output_folder_name and not just_download:
+        from datetime import datetime
+        output_folder_name = datetime.now().strftime('output_%Y%m%d_%H%M%S')
 
     # Get barcode list
     codes = []

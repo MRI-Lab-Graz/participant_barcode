@@ -191,7 +191,7 @@
     
     // Validation function
     function validateIDs(codeString) {
-        if (!codeString.trim()) return { valid: true, errors: [] };
+        if (!codeString.trim()) return { valid: true, errors: [], count: 0, codes: [] };
         
         const codes = codeString.split('\n').map(c => c.trim()).filter(c => c.length > 0);
         const errors = [];
@@ -211,9 +211,62 @@
         return {
             valid: errors.length === 0,
             errors: errors,
-            count: codes.length
+                        count: codes.length,
+                        codes: codes
         };
     }
+
+        function openBarcodePreview(codes) {
+                if (!codes || codes.length === 0) return;
+
+                const preview = window.open('', '_blank', 'width=900,height=700');
+                if (!preview) {
+                        alert('Please allow pop-ups to see the barcode preview.');
+                        return;
+                }
+
+                const html = `<!DOCTYPE html>
+<html><head><title>Barcode Preview</title>
+<style>
+    body { font-family: system-ui, -apple-system, sans-serif; padding: 16px; }
+    h3 { margin-bottom: 12px; }
+    .item { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .code-text { font-family: monospace; font-size: 14px; color: #333; }
+    svg { border: 1px solid #e0e0e0; padding: 6px; background: #fafafa; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"><\/script>
+</head><body>
+    <h3>Barcodes (${codes.length})</h3>
+    <div id="barcodes"></div>
+    <script>
+        const codes = __CODES__;
+        const container = document.getElementById('barcodes');
+        codes.forEach(code => {
+            const wrap = document.createElement('div');
+            wrap.className = 'item';
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('jsbarcode-format', 'code128');
+            svg.setAttribute('jsbarcode-value', code);
+            svg.setAttribute('jsbarcode-height', '60');
+            svg.setAttribute('jsbarcode-width', '1.6');
+            svg.setAttribute('jsbarcode-display-value', 'true');
+            svg.setAttribute('jsbarcode-margin', '6');
+            const label = document.createElement('div');
+            label.className = 'code-text';
+            label.textContent = code;
+            wrap.appendChild(svg);
+            wrap.appendChild(label);
+            container.appendChild(wrap);
+            JsBarcode(svg).init();
+        });
+    <\/script>
+</body></html>`;
+
+                // Inject the actual codes into the placeholder array after creating the HTML
+                const hydratedHtml = html.replace('__CODES__', JSON.stringify(codes));
+                preview.document.write(hydratedHtml);
+                preview.document.close();
+        }
 
     function displayValidation(result) {
         validationFeedback.innerHTML = '';
@@ -237,7 +290,9 @@
 
     validateBtn.addEventListener('click', () => {
         const result = validateIDs(barcodeTextArea.value);
-        displayValidation(result);
+        if (displayValidation(result)) {
+            openBarcodePreview(result.codes);
+        }
     });
 
     barcodeFile.addEventListener('change', (e) => {

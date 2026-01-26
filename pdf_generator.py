@@ -11,12 +11,12 @@ def generate_pdfs(codes, template_path, output_dir, barcode_dir='barcodes'):
     os.makedirs(barcode_dir, exist_ok=True)
     os.makedirs(output_dir, exist_ok=True)
 
-    # Read LaTeX template
-    with open(template_path, 'r') as f:
+    # Read LaTeX template with explicit UTF-8 encoding for cross-platform compatibility
+    with open(template_path, 'r', encoding='utf-8') as f:
         template = f.read()
 
     # Calculate relative path from output_dir to barcode_dir
-    # This is needed because the template might have ../barcodes/
+    # This is needed because the template might have ../barcodes/ or ../../barcodes/
     # but we might be in a nested output folder.
     rel_barcode_dir = os.path.relpath(barcode_dir, output_dir)
     # Ensure it ends with a slash and uses forward slashes for LaTeX
@@ -36,23 +36,30 @@ def generate_pdfs(codes, template_path, output_dir, barcode_dir='barcodes'):
             # Replace ID and update barcode path in template
             tex_content = template.replace('<<ID>>', uid)
             
-            # Replace relative barcode path with absolute path
-            abs_barcode_dir = os.path.abspath(barcode_dir).replace(os.sep, '/')
-            tex_content = tex_content.replace('../barcodes/', abs_barcode_dir + '/')
+            # Use ABSOLUTE paths for barcode - more reliable with pdflatex
+            # This works cross-platform as we normalize to forward slashes
+            abs_barcode_path = os.path.abspath(os.path.join(barcode_dir, f'barcode_{uid}.png'))
+            abs_barcode_path = abs_barcode_path.replace('\\', '/')
+            
+            # Replace barcode path patterns with absolute path
+            tex_content = tex_content.replace('../barcodes/barcode_<<ID>>.png', abs_barcode_path)
+            tex_content = tex_content.replace('../../barcodes/barcode_<<ID>>.png', abs_barcode_path)
             
             # Replace relative image paths with absolute paths
-            subject_info_dir = os.path.dirname(os.path.abspath(template_path))
-            subject_info_dir = os.path.dirname(subject_info_dir)  # Go up two levels to subject_info/
-            subject_info_dir = subject_info_dir.replace(os.sep, '/')
+            template_dir = os.path.dirname(os.path.abspath(template_path))
+            # Go up two levels: from latex/de/ or latex/en/ to subject_info/
+            subject_info_dir = os.path.dirname(os.path.dirname(template_dir))
+            # Normalize path for LaTeX (always use forward slashes)
+            subject_info_dir = subject_info_dir.replace('\\', '/')
             
             # Replace the relative paths with absolute paths
             tex_content = tex_content.replace('../../psychologo.png', subject_info_dir + '/psychologo.png')
             tex_content = tex_content.replace('../../mrilab.png', subject_info_dir + '/mrilab.png')
             tex_content = tex_content.replace('../../unigrazlogo.png', subject_info_dir + '/unigrazlogo.png')
 
-            # Save .tex file
+            # Save .tex file with explicit encoding and Unix line endings for LaTeX compatibility
             tex_filename = os.path.join(output_dir, f'sub-{uid}.tex')
-            with open(tex_filename, 'w') as tex_file:
+            with open(tex_filename, 'w', encoding='utf-8', newline='\n') as tex_file:
                 tex_file.write(tex_content)
 
             # Compile LaTeX to PDF
@@ -60,12 +67,18 @@ def generate_pdfs(codes, template_path, output_dir, barcode_dir='barcodes'):
             sep = ';' if os.name == 'nt' else ':'
             env['TEXINPUTS'] = f".{sep}{env.get('TEXINPUTS', '')}"
 
-            subprocess.run([
+            result = subprocess.run([
                 'pdflatex',
                 '-interaction=nonstopmode',
                 '-output-directory', output_dir,
                 tex_filename
-            ], check=True, capture_output=True, env=env)
+            ], capture_output=True, env=env)
+
+            # Check if PDF was actually created (pdflatex can return non-zero even on success with warnings)
+            pdf_path = os.path.join(output_dir, f'sub-{uid}.pdf')
+            if not os.path.exists(pdf_path):
+                error_msg = result.stderr.decode('utf-8', errors='ignore') if result.stderr else 'PDF generation failed'
+                raise Exception(f"PDF not created: {error_msg[:200]}")
 
             results.append({'id': uid, 'status': 'success'})
 
