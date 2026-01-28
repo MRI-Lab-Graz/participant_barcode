@@ -57,14 +57,29 @@ jobs:
       run: |
         move dist\ParticipantBarcodeTool.exe dist\${{ matrix.artifact_name }}
 
-    # Optional: Sign Windows executable (requires secrets.SIGNING_CERT setup)
-    # Uncomment when you have a code signing certificate
-    # - name: Sign Windows executable
-    #   if: matrix.os == 'windows-latest' && secrets.SIGNING_CERT != ''
-    #   run: |
-    #     echo "${{ secrets.SIGNING_CERT }}" | base64 -d > cert.pfx
-    #     signtool sign /f cert.pfx /p "${{ secrets.CERT_PASSWORD }}" /t http://timestamp.digicert.com dist\${{ matrix.artifact_name }}
-    #     del cert.pfx
+    # Sign Windows executable with code signing certificate
+    # To enable: Add SIGNING_CERTIFICATE (base64 PFX) and SIGNING_PASSWORD to GitHub Secrets
+    - name: Sign Windows executable
+      if: matrix.os == 'windows-latest' && secrets.SIGNING_CERTIFICATE != ''
+      shell: pwsh
+      run: |
+        # Decode certificate from base64 secret
+        $certBytes = [System.Convert]::FromBase64String("${{ secrets.SIGNING_CERTIFICATE }}")
+        [System.IO.File]::WriteAllBytes("$env:TEMP\cert.pfx", $certBytes)
+        
+        # Sign the executable with SHA256 and timestamp
+        & "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe" sign `
+          /f "$env:TEMP\cert.pfx" `
+          /p "${{ secrets.SIGNING_PASSWORD }}" `
+          /tr http://timestamp.digicert.com `
+          /td sha256 `
+          /fd sha256 `
+          /d "Participant Barcode Tool" `
+          /du "https://github.com/MRI-Lab-Graz/participant_barcode" `
+          "dist\${{ matrix.artifact_name }}"
+        
+        # Clean up certificate file
+        Remove-Item "$env:TEMP\cert.pfx" -Force
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
